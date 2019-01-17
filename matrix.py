@@ -58,27 +58,12 @@ class Matrix:
 			return ValueError("Number of columns of first matrix must match number of rows of second matrix.")
 
 
-	def toList(self):
-		result_list = []
+	def clear(self):
 		for r in range(self.rows):
 			for c in range(self.columns):
-				result_list.append(self.data[r][c])
+				self.data[r][c] = 0
 
-		return result_list
-
-
-	def fromList(arr, rows, columns):
-		if (rows * columns == len(arr)):
-
-			result = Matrix(rows, columns)
-
-			for r in range(rows):
-				for c in range(columns):
-					result.data[r][c] = arr[r * columns + c]
-
-			return result
-		else:
-			return ValueError("List of incorrect size provided.")
+		return self
 
 
 	def add(self, other):
@@ -136,3 +121,26 @@ class Matrix:
 			return hadamard_product
 		else:
 			return ValueError("The dimensions of the matracies should be equal.")
+
+
+	def to_list(self):
+		result_list = []
+		for r in range(self.rows):
+			for c in range(self.columns):
+				result_list.append(self.data[r][c])
+
+		return result_list
+
+
+	def from_list(arr, rows, columns):
+		if (rows * columns == len(arr)):
+
+			result = Matrix(rows, columns)
+
+			for r in range(rows):
+				for c in range(columns):
+					result.data[r][c] = arr[r * columns + c]
+
+			return result
+		else:
+			return ValueError("List of incorrect size provided.")
