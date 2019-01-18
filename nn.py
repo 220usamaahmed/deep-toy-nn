@@ -5,6 +5,9 @@ from matrix import Matrix
 class FeedForwardNeuralNetwork:
 
 	def __init__(self, input_size, output_size, hidden_layer_sizes):
+
+		self.learning_rate = 0.1
+
 		self.input_layer = InputLayer(input_size)
 		self.output_layer = OutputLayer(output_size)
 		self.hidden_layers = [HiddenLayer(hidden_layer_size) for hidden_layer_size in hidden_layer_sizes]
@@ -34,6 +37,9 @@ class FeedForwardNeuralNetwork:
 		self.predict(input_arr)
 
 		self.output_layer.calculate_errors(target_arr)
-
 		for hidden_layer in reversed(self.hidden_layers):
-			hidden_layer.calculate_errors()	
+			hidden_layer.calculate_errors()
+
+		self.output_layer.adjust_parameters(self.learning_rate)
+		for hidden_layer in reversed(self.hidden_layers):
+			hidden_layer.adjust_parameters(self.learning_rate)
