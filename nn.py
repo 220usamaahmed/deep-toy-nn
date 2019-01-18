@@ -4,32 +4,36 @@ from matrix import Matrix
 
 class FeedForwardNeuralNetwork:
 
-	def __init__(self, input_size, output_size, hidden_layer_sizes=[]):
-
-		if len(hidden_layer_sizes) == 0: raise ValueError("There must be atleast one hidden layer.")
-
+	def __init__(self, input_size, output_size, hidden_layer_sizes):
 		self.input_layer = InputLayer(input_size)
-		
-		self.hidden_layers = []
-		for i, hidden_layer_size in enumerate(hidden_layer_sizes):
-			if (i == 0): new_hidden_layer = HiddenLayer(hidden_layer_size, input_size)
-			else: new_hidden_layer = HiddenLayer(hidden_layer_size, hidden_layer_sizes[i - 1])
-			self.hidden_layers.append(new_hidden_layer)
+		self.output_layer = OutputLayer(output_size)
+		self.hidden_layers = [HiddenLayer(hidden_layer_size) for hidden_layer_size in hidden_layer_sizes]
 
-		self.output_layer = OutputLayer(output_size, hidden_layer_sizes[-1])
+		for i, hidden_layer in enumerate(self.hidden_layers):
+			if i == 0 and i == len(self.hidden_layers) - 1: hidden_layer.initialize(self.input_layer, self.output_layer)
+			elif i == 0: hidden_layer.initialize(self.input_layer, self.hidden_layers[i + 1])
+			elif i == len(self.hidden_layers) - 1: hidden_layer.initialize(self.hidden_layers[i - 1], self.output_layer)
+			else: hidden_layer.initialize(self.hidden_layers[i - 1], self.hidden_layers[i + 1])
+
+		if (len(self.hidden_layers)): self.output_layer.initialize(self.hidden_layers[-1])
+		else: self.output_layer.initialize(self.input_layer)
 
 
 	def predict(self, input_arr):
 		self.input_layer.set_values(input_arr)
-		
-		for i, hidden_layer in enumerate(self.hidden_layers):
-			if i == 0: hidden_layer.feed_forward(self.input_layer.values)
-			else: hidden_layer.feed_forward(self.hidden_layers[i - 1].values)
 
-		self.output_layer.feed_forward(self.hidden_layers[-1].values)
+		for hidden_layer in self.hidden_layers:
+			hidden_layer.feed_forward()
+
+		self.output_layer.feed_forward()
 
 		return self.output_layer.values
 
 
 	def train(self, input_arr, target_arr):
-		pass
+		self.predict(input_arr)
+
+		self.output_layer.calculate_errors(target_arr)
+
+		for hidden_layer in reversed(self.hidden_layers):
+			hidden_layer.calculate_errors()	
