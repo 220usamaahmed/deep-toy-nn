@@ -33,35 +33,3 @@ for i, image in enumerate(images[:100]):
 		correct += 1
 
 print("{} Correct out of 100. training epocs: {}".format(correct, training_epocs))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# print(mndata.display(images[1]))
-
-# column = 0
-# for pixel in images[1]:
-# 	column += 1
-
-# 	print(min(1, pixel), end=" ")
-
-# 	if column % 28 == 0: print()
-
-
-# print(len(images[1]))
-
